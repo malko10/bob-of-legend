@@ -5,7 +5,7 @@ import { useAllergies } from "@/hooks/useAllergies";
 import type { AllergyCode } from "@/lib/types";
 
 export function AllergySelector() {
-  const { allergies, toggle, hydrated } = useAllergies();
+  const { allergies, toggle, clearAll, hydrated } = useAllergies();
 
   if (!hydrated) {
     return (
@@ -28,6 +28,15 @@ export function AllergySelector() {
             ? `${allergies.length}개 알레르기 성분 선택됨`
             : "해당하는 알레르기를 모두 선택해 주세요"}
         </p>
+        {allergies.length > 0 && (
+          <button
+            type="button"
+            onClick={clearAll}
+            className="rounded-full border border-zinc-200 px-3 py-1 text-xs font-medium text-zinc-500 transition-colors hover:border-red-300 hover:bg-red-50 hover:text-red-600 dark:border-zinc-700 dark:text-zinc-400 dark:hover:border-red-800 dark:hover:bg-red-950/40 dark:hover:text-red-300"
+          >
+            초기화
+          </button>
+        )}
       </div>
       <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-5">
         {ALLERGIES.map((a) => {
