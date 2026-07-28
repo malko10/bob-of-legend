@@ -3,15 +3,14 @@
 import { useCallback, useEffect, useState } from "react";
 import { useAllergies } from "@/hooks/useAllergies";
 import {
-  dashToYyyymmdd,
   formatDateKR,
   getWeekdayKR,
   shiftDate,
   todayYYYYMMDD,
-  yyyymmddToDash,
 } from "@/lib/meal-service";
 import type { MealsResponse, SelectedSchool } from "@/lib/types";
 import { AlertBanner } from "./AlertBanner";
+import { CalendarPopover } from "./CalendarPopover";
 import { MealCard } from "./MealCard";
 
 interface Snapshot {
@@ -24,6 +23,7 @@ export function MealBoard({ school }: { school: SelectedSchool }) {
   const { allergies, hydrated } = useAllergies();
   const [date, setDate] = useState<string>(todayYYYYMMDD());
   const [refreshKey, setRefreshKey] = useState(0);
+  const [calendarOpen, setCalendarOpen] = useState(false);
   const [snapshot, setSnapshot] = useState<Snapshot>({
     key: "",
     data: null,
@@ -83,22 +83,16 @@ export function MealBoard({ school }: { school: SelectedSchool }) {
             ←
           </button>
 
-          <label className="flex cursor-pointer items-center gap-2 rounded-full border border-zinc-200 px-4 py-1.5 text-sm font-semibold text-zinc-800 transition-colors hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-800">
+          <button
+            type="button"
+            onClick={() => setCalendarOpen(true)}
+            className="flex cursor-pointer items-center gap-2 rounded-full border border-zinc-200 px-4 py-1.5 text-sm font-semibold text-zinc-800 transition-colors hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-800"
+          >
             <span aria-hidden>📅</span>
             <span className="whitespace-nowrap">
               {formatDateKR(date)} {getWeekdayKR(date)}
             </span>
-            <input
-              type="date"
-              value={yyyymmddToDash(date)}
-              onChange={(e) => {
-                if (e.target.value) setDate(dashToYyyymmdd(e.target.value));
-              }}
-              className="sr-only"
-              tabIndex={-1}
-              aria-label="날짜 선택"
-            />
-          </label>
+          </button>
 
           <button
             onClick={() => setDate((d) => shiftDate(d, 1))}
@@ -124,6 +118,14 @@ export function MealBoard({ school }: { school: SelectedSchool }) {
           새로고침
         </button>
       </div>
+
+      {calendarOpen && (
+        <CalendarPopover
+          value={date}
+          onChange={setDate}
+          onClose={() => setCalendarOpen(false)}
+        />
+      )}
 
       {loading ? (
         <div className="grid gap-4 md:grid-cols-3">
