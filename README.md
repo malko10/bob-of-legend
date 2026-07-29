@@ -15,9 +15,7 @@ npm run dev
 NEIS_API_KEY=공공데이터포털에서발급받은인증키
 ```
 링크
-```
 https://bob-of-legend.vercel.app/
-```
 
 ## 사용 흐름
 
